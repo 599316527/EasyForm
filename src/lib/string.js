@@ -122,6 +122,16 @@ define(
                 .value();
         };
 
+        /**
+         * 获取Byte长度
+         * @param  {string} a
+         * @return {int}
+         */
+        lib.getByteLength = function(a) {
+            return String(a).replace(/[^\x00-\xff]/g, "ci").length;
+        };
+
+
         return lib;
     }
 );

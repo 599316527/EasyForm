@@ -58,6 +58,7 @@ A simple way to create forms.
 ## build
 
     npm install -g edp
+    edp import esui est
     edp build -f --stage=release
 
 dist/EasyForm-{version}.js 就是最终打包后的JS，引入到项目即可

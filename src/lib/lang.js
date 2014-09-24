@@ -207,6 +207,76 @@ define(
             return null;
         };
 
+        /**
+         * 是否为字符串
+         * @param  {*}  a 
+         * @return {Boolean}   
+         */
+        lib.isString = function(a) {
+            return Object.prototype.toString.call(a) == '[object String]';
+        };
+
+        /**
+         * 是否为数字
+         * @param  {*}  a
+         * @return {Boolean}
+         */
+        lib.isNumber = function(a) {
+            return !isNaN(a - 0);
+        };
+
+
+        lib.trim = (function() {
+            var a = new RegExp("(^[\\s\\t\\xa0\\u3000]+)|([\\u3000\\xa0\\s\\t]+\x24)", "g");
+            return function(b) {
+                return String(b).replace(a, "");
+            };
+        })();
+
+        /**
+         * 检测输入的内容是否是
+         * null, undefined, "", [], {}, "      "之类的东东.
+         * @param {*} object 要判断的元素.
+         * @return {boolean}
+         */
+        lib.isEmptyObject = function(object) {
+            if (object == null) {
+                // null == null
+                // undefined == null
+                return true;
+            }
+
+            if (lib.isString(object)) {
+                return (!object || !lib.trim(object));
+            } else if (u.isArray(object)) {
+                return !object.length;
+            } else if (Object.prototype.toString.call(object) != '[object Object]') {
+                return false;
+            } else if (u.isEmpty(object)) {
+                return true;
+            }
+
+            return false;
+        };
+
+        lib.forEach = function(arr, func) {
+            if (u.isArray(arr)) {
+                if (Array.prototype.forEach) {
+                    Array.prototype.forEach.call(arr, func);
+                } else {
+                    for (var i = 0; i < arr.length; i++) {
+                        func(arr[i], i);
+                    }
+                }
+            } else if (u.isObject(arr)) {
+                for (var i in arr) {
+                    if (arr.hasOwnProperty(i)) {
+                        func(arr[i], i);
+                    }
+                }
+            }
+        }
+
         return lib;
     }
 );

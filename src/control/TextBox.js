@@ -34,7 +34,7 @@ define(function(require) {
          *
          * @type {Array.<string>}
          */
-        this.optionKeys = ['placeholder', 'multiline', 'defaultValue', 'readOnly'];
+        this.optionKeys = ['placeholder', 'name', 'multiline', 'title', 'defaultValue', 'readOnly'];
 
         BaseControl.apply(this, arguments);
     }
@@ -46,7 +46,9 @@ define(function(require) {
         // 创建esui控件
         this.control = new ETextBox({
             mode: (this.multiline ? 'textarea' : 'text'),
-            placeholder: this.placeholder
+            name: this.name,
+            placeholder: this.placeholder,
+            title: this.title
         });
         if (this.defaultValue) {
             this.control.setValue(this.defaultValue);

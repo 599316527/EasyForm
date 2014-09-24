@@ -27,6 +27,8 @@ define(function() {
         return uuid;
     };
 
+    util.validate = require('Validator');
+
     return util;
 });
 

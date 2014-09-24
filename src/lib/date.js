@@ -72,6 +72,15 @@ define(
             return dateTime.toDate();
         };
 
+        /**
+         * 判断是否为日期
+         */
+        date.isDate = function(a) {
+            return {}.toString.call(a) === "[object Date]" 
+                 && a.toString() !== "Invalid Date" 
+                 && !isNaN(a)
+        };
+
         return { date: date };
     }
 );

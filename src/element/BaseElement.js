@@ -17,6 +17,7 @@
 define(function(require) {
     var u = require('underscore');
     var lib = require('../lib');
+    var util = require('../util');
     var EventTarget = require('mini-event/EventTarget');
 
     var IElement = require('./IElement');
@@ -61,6 +62,12 @@ define(function(require) {
         this.parent = null;
 
         /**
+         * 验证规则，所有InputControl类型的控件都可以有这个属性.
+         * @type {?string|Array.<string>}
+         */
+        this.rule;
+
+        /**
          * 可配置的 option 的字段
          *
          * @type {Array.<string>}
@@ -68,6 +75,10 @@ define(function(require) {
         this.optionKeys = (this.optionKeys || []).concat(['id', 'parent', 'main']);
 
         this.initOptions(options);
+
+        if (this.schema['rules']) {
+            this.initRules(this.schema['rules']);
+        }
     }
 
     /**
@@ -89,6 +100,16 @@ define(function(require) {
             if (options[key] != null) {
                 that[key] = options[key];
             }
+        });
+    };
+
+    /**
+     * 初始化验证规则
+     */
+    BaseElement.prototype.initRules = function(rules) {
+        var me = this;
+        lib.forEach(rules, function(ruleSeg, ruleName) {
+            me.setRule(ruleName, ruleSeg);
         });
     };
 
@@ -178,6 +199,72 @@ define(function(require) {
     BaseElement.prototype.setValue = function(value) {
         this.value = value;
     };
+
+
+    /**
+     * 设置验证规则
+     * 对于相同名称的验证规则，会被覆盖
+     * @param {string} ruleName 验证规则的名称
+     * @param {Array=} opt_ruleArgs 验证规则的参数
+     */
+    BaseElement.prototype.setRule = function(ruleName, opt_ruleArgs) {
+        var ruleArgs = opt_ruleArgs || [],
+            rule = [ruleName].concat(ruleArgs);
+        if (!this.rule) {
+            this.rule = [];
+        }
+        if (lib.isString(this.rule)) {
+            this.rule = [this.rule];
+        }
+        for (var i = 0; i < this.rule.length; i++) {
+            if (ruleName == getRuleName(this.rule[i])) {
+                this.rule[i] = rule;
+                return;
+            }
+        }
+        this.rule.push(rule);
+
+        /**
+         * 返回rule的名称
+         * @param {string|Array} rule 验证规则
+         * @return {string} 验证规则名称
+         */
+        function getRuleName(rule) {
+            return lib.isString(rule) ? rule.split(',')[0] : rule[0];
+        }
+    };
+
+
+    /**
+     * 验证控件的值
+     * @return {boolean} true验证通过，false验证失败.
+     */
+    BaseElement.prototype.validate = function() {
+        if (!this.rule) {
+            return true;
+        }
+
+        return util.validate(this, this.rule, 'after');
+    };
+
+    /**
+     * 显示错误信息，常用于后端验证错误显示
+     * @param {string} errorMessage 需要显示的错误信息.
+     */
+    BaseElement.prototype.showError = function(errorMessage) {
+        this.errorMessage = errorMessage;
+        util.validate(this, 'backendError,this');
+        this.errorMessage = null;
+    };
+
+    /**
+     * FIXME 和全局的函数hideError有以来关系了...
+     * 隐藏验证错误信息.
+     */
+    BaseElement.prototype.hideError = function() {
+        util.validate.hideError(this.main);
+    };
+
 
     lib.inherits(BaseElement, EventTarget);
 

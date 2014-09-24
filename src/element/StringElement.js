@@ -36,6 +36,7 @@ define(function(require) {
     StringElement.prototype.render = function() {
         BaseElement.prototype.render.apply(this, arguments);
         lib.addClass(this.main, 'ef-item-string');
+        this.main.id = 'ef-item-' + this.schema['name'];
 
         this.main.innerHTML = '<div class="ef-item-key">' + u.escape(this.schema['displayName']) + '</div>';
         var container = document.createElement('div');
@@ -44,10 +45,14 @@ define(function(require) {
 
         var data = {
             container: container,
-            multiline: !!this.schema['multiline']
+            name: this.schema['name'],
+            multiline: !!this.schema['multiline'],
         };
         if (this.schema['tip']) {
             data['placeholder'] = this.schema['tip'];
+        }
+        if (this.schema['displayName']) {
+            data['title'] = this.schema['displayName'];
         }
         if (this.schema['defaultValue']) {
             data['defaultValue'] = this.schema['defaultValue'];

@@ -200,6 +200,31 @@ define(function(require) {
         // TODO
     };
 
+    /**
+     * 表单验证
+     * @return {Boolean} 验证通过返回true
+     */
+    EasyForm.prototype.validate = function() {
+        var controls = this.root.children;
+        for (var i = 0; i < controls.length; i++) {
+            if (!controls[i].validate()) {
+                return false;
+                break;
+            }
+        }
+        return true;
+    };
+
+    /**
+     * 隐藏错误
+     */
+    EasyForm.prototype.hideError = function() {
+        var controls = this.root.children;
+        for (var i = 0; i < controls.length; i++) {
+            util.validate.hideError(controls[i].main, 'after');
+        }
+    };
+
     // 注册预定义元素
     var StringElement = require('./element/StringElement');
     var ObjectElement = require('./element/ObjectElement');

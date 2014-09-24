@@ -84,7 +84,7 @@ define(function(require) {
          *
          * @type {Array.<string>}
          */
-        this.optionKeys = ['datasource', 'selectedIndex'];
+        this.optionKeys = ['datasource', 'name', 'selectedIndex'];
 
         BaseControl.apply(this, arguments);
     }
@@ -101,6 +101,7 @@ define(function(require) {
         // 创建esui控件
         this.control = new ESelect({
             datasource: datasource,
+            name: this.name,
             selectedIndex: this.selectedIndex || 0
         });
     };

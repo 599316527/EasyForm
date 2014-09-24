@@ -10,11 +10,45 @@ body {
     margin:0;
     font-family:Arial,Liberation Sans,DejaVu Sans,sans-serif;
 }
+
+.ef-item {
+    position: relative;
+}
+
+.validate {
+    /*width: 100%;*/
+    position: absolute;
+    z-index: 1;
+    background: #FFF2F2;
+    border: 1px solid #FFBFBF;
+    font-size: 12px;
+}
+.validate-icon {
+    margin: 2px 4px;
+    width: 12px;
+    height: 12px;
+    background: url(//bs.baidu.com/adtest/932c4b53822ea2355fe3aa3517d6c844.gif) no-repeat center;
+    float: left;
+}
+.validate-text {
+    margin-left: 16px;
+    padding: 2px 4px;
+}
+
+#validate-result {
+    color: green;
+}
+
 </style>
 <link rel="stylesheet" href="src/css/main.less" />
 </head>
 <body>
 <div id="canvas"></div>
+<div>
+    <br/>
+    <button id="validate-btn">验证表单</button>
+    <span id="validate-result"></span>
+</div>
 <script type="text/javascript">
 require.config({
     'baseUrl': 'src',
@@ -62,7 +96,7 @@ require(['EasyForm'] , function(EasyForm) {
             "datatype": "STRING",
             "rules": {
                 "required": true,
-                "maxByteLength": 20
+                "maxTextCNCharLength": 15
             }
         },
         {
@@ -84,7 +118,8 @@ require(['EasyForm'] , function(EasyForm) {
                 }
             ],
             "rules": {
-                "required": true
+                "required": true,
+                "notdefault": true
             }
         },
         {
@@ -103,7 +138,8 @@ require(['EasyForm'] , function(EasyForm) {
                 {"displayValue":"济源市","value":"4190"}
             ],
             "rules": {
-                "required": true
+                "required": true,
+                "notdefault": true
             }
         },
         {
@@ -112,7 +148,8 @@ require(['EasyForm'] , function(EasyForm) {
             "tip": "您的手机号码",
             "datatype": "STRING",
             "rules": {
-                "required": true
+                "required": true,
+                "mobile": true
             }
         },
         {
@@ -121,7 +158,8 @@ require(['EasyForm'] , function(EasyForm) {
             "tip": "您的电子邮箱",
             "datatype": "STRING",
             "rules": {
-                "required": true
+                "required": true,
+                "email": true
             }
         },
         {
@@ -130,7 +168,7 @@ require(['EasyForm'] , function(EasyForm) {
             "datatype": "STRING",
             "defaultValue": "DS 6",
             "rules": {
-                "required": true
+                "required": true,
             },
             "extraAttr": {
                 "readOnly": true
@@ -142,6 +180,29 @@ require(['EasyForm'] , function(EasyForm) {
 
     easyform.render(document.getElementById('canvas'));
 });
+</script>
+<script type="text/javascript">
+(function() {
+    var canvas = document.getElementById('canvas');
+    var vButton = document.getElementById('validate-btn');
+    var vResult = document.getElementById('validate-result');
+
+    var controls;
+
+    vButton.addEventListener('click', function() {
+        vResult.innerHTML = '';
+        if (!eForm) return ;
+        if (eForm.validate()) {
+            vResult.innerHTML = '验证通过';
+        }
+    });
+
+    canvas.addEventListener('click', function(evt) {
+        if (!eForm) return ;
+        eForm.hideError();
+    });
+
+})(); 
 </script>
 </body>
 </html>
